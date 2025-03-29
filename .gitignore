@@ -1,0 +1,31 @@
+# Virtual Environment
+venv/
+env/
+
+# Compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+
+# Logs & Temp files
+*.log
+*.tmp
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VS Code Settings
+.vscode/
+
+# System-specific files
+.DS_Store
+Thumbs.db
+
+# Secrets & Credentials
+.env
+config.json
+
+# PyInstaller Builds
+dist/
+build/
+*.spec
