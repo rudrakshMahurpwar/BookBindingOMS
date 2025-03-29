@@ -29,3 +29,6 @@ config.json
 dist/
 build/
 *.spec
+
+# Unwanted Folders
+Trash/
