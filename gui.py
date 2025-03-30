@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from datetime import datetime
-from config import COLORS
+from config import COLORS, FONTS
 from windows.confirmation_window import ConfirmationWindow
 import sys
 import os
@@ -12,6 +12,7 @@ from windows.new_order_ui import NewOrderUI  # Import the New Order UI
 
 # Set the theme to light mode
 ctk.set_appearance_mode("light")
+ctk.set_default_color_theme("theme.json")
 
 
 class BookBindingApp(ctk.CTk):
@@ -19,23 +20,31 @@ class BookBindingApp(ctk.CTk):
         super().__init__()
         print("Initializing Book Binding Order Management System...")
 
+        # Fetch screen width & height
+        screen_width: int = self.winfo_screenwidth()
+        screen_height: int = self.winfo_screenheight()
+
+        # Calculate window size
+        window_width: int = int(screen_width * 0.28)
+        window_height: int = int(screen_height * 0.9)
+
         # App Configuration
         self.title("📚 Book Binding Order Management")
-        self.geometry("800x600")
-        self.configure(bg=COLORS["background"])
+        self.geometry(f"{window_width}x{window_height}+950+10")
 
         # Create Tabs
         self.tabview = ctk.CTkTabview(self)
-        self.tabview.pack(fill="both", expand=True, padx=20, pady=20)
+        self.tabview.pack(fill="both", expand=True, padx=20, pady=10)
 
         # Tabs
         self.new_order_tab: ctk.CTkFrame = self.tabview.add("🆕 New Order")
         self.manage_orders_tab: ctk.CTkFrame = self.tabview.add("📋 Manage Orders")
 
+        # Universal Tab Style (Applies to all tabs)
+        self.tabview.configure(border_width=0)
+
         # Status Bar
-        self.status_bar = ctk.CTkLabel(
-            self, text="", fg_color="lightgray", anchor="w", font=("Arial", 12)
-        )
+        self.status_bar = ctk.CTkLabel(self, text="", anchor="nw", padx=20)
         self.status_bar.pack(fill="x", side="bottom")
 
         # Initialize New Order UI
@@ -50,16 +59,18 @@ class BookBindingApp(ctk.CTk):
         """Enable/Disable fields based on order type and dynamically show relevant fields."""
         if choice == "PDF Printing":
             # Show fields relevant to PDF Printing
-            self.new_order_ui.book_count_entry.pack(pady=5)
-            self.new_order_ui.bw_print_entry.pack(pady=5)
-            self.new_order_ui.color_print_entry.pack(pady=5)
-            self.new_order_ui.ohp_count_entry.pack(pady=5)
+            self.new_order_ui.book_count_entry.pack(pady=10)
+            self.new_order_ui.bw_print_entry.pack(pady=10)
+            self.new_order_ui.color_print_entry.pack(pady=10)
+            self.new_order_ui.ohp_count_entry.pack(pady=10)
+
         elif choice == "Page Binding":
             # Show only fields relevant to Page Binding
-            self.new_order_ui.book_count_entry.pack(pady=5)
+            self.new_order_ui.book_count_entry.pack(pady=10)
             self.new_order_ui.bw_print_entry.pack_forget()
             self.new_order_ui.color_print_entry.pack_forget()
-            self.new_order_ui.ohp_count_entry.pack(pady=5)
+            self.new_order_ui.ohp_count_entry.pack(pady=10)
+
         else:
             # Hide all fields if no valid order type is selected
             self.new_order_ui.book_count_entry.pack_forget()
@@ -139,11 +150,13 @@ class BookBindingApp(ctk.CTk):
         label = ctk.CTkLabel(
             self.manage_orders_tab,
             text="📋 Manage Orders (Coming Soon)",
-            font=("Arial", 20, "bold"),
+            font=("Arial", 50, "bold"),
         )
         label.pack(pady=10)
 
     def show_confirmation_window(self, order_data: dict) -> None:
+        self.withdraw
+
         confirmation_window = ConfirmationWindow(
             self, order_data, self.new_order_ui.clear_inputs, self.update_status_bar
         )

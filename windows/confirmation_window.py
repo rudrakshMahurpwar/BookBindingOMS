@@ -122,6 +122,7 @@ class ConfirmationWindow:
             self.clear_main_window()
 
         def modify_order() -> None:
+            self.update_status_bar("❌ Update the Order.", "blue")
             confirmation_window.destroy()
 
         def cancel_order() -> None:
