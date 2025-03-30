@@ -24,12 +24,12 @@ class Header(ctk.CTkFrame):
 
         # ========== LEFT: LOGO ==========
         self.logo_label = ctk.CTkLabel(
-            self, text="📖", font=("Arial", 22, "bold"), text_color="white"
+            self, text="📖 Book Binding", font=("Arial", 22, "bold"), text_color="white"
         )
         self.logo_label.grid(row=0, column=0, sticky="w", padx=20, pady=10)
 
         # ========== CENTER: EMPTY SPACE (Keeps Buttons on the Right) ==========
-        self.grid_columnconfigure(1, weight=1)  # Ensures space between logo & buttons
+        # self.grid_columnconfigure(1, weight=1)  # Ensures space between logo & buttons
 
         # ========== RIGHT: NAVIGATION BUTTONS & ADMIN ICON ==========
         self.right_frame = ctk.CTkFrame(self, fg_color="transparent")
@@ -79,7 +79,7 @@ class Header(ctk.CTkFrame):
         home_page = Home(self.content_frame)
         home_page.pack(fill="both", expand=True)
 
-    def show_take_order(self):
+    def show_take_order(self) -> None:
         print("Navigating to Take Order Page...")
         for widget in self.content_frame.winfo_children():
             widget.destroy()

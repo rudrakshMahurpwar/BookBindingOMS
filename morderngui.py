@@ -3,6 +3,7 @@ from config import COLORS  # Importing color theme
 
 from windows.header import Header
 from windows.footer import Footer
+from windows.take_order import TakeOrder
 
 
 # Set the theme
@@ -44,6 +45,14 @@ class BookBindingApp(ctk.CTk):
         self.header.pack(fill="both", expand=True)
         self.content.grid_columnconfigure((0, 1), weight=1)
         self.content.grid_rowconfigure(0, weight=1)
+
+        # Inject TakeOrder frame by default
+        self.take_order_page = TakeOrder(
+            self.content
+        )  # Create an instance of TakeOrder
+        self.take_order_page.pack(
+            fill="both", expand=True
+        )  # Display it in the content frame
 
         # ---------------- HEADER ---------------- #
         self.header_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=(10, 0))

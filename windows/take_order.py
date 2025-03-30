@@ -1,128 +1,219 @@
 import customtkinter as ctk
 from datetime import datetime
+from tkcalendar import DateEntry
+
+import sys
+import os
+
+# Add the root directory to sys.path so Python can find config.py
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from utils.date_picker import DatePicker
 from config import COLORS, FONTS
 
 
 class TakeOrder(ctk.CTkFrame):
-    def __init__(self, parent) -> None:
-        super().__init__(parent, fg_color="transparent")
+    def __init__(self, parent, fg_color=COLORS["primary"]) -> None:
+        super().__init__(parent)
 
-        # Example Content for Take Order Page
-        self.label = ctk.CTkLabel(self, text="Take Order Page", font=("Arial", 18))
-        self.label.pack(pady=20)
+        # ----------- CREATING FRAMES ------------#
+        # Left Frame
 
-        self.order_btn = ctk.CTkButton(
-            self, text="Create New Order", command=self.create_order
-        )
-        self.order_btn.pack(pady=10)
-
-    def create_order(self) -> None:
-        print("Creating a new order...")
-
-
-'''
-class TakeOrder(ctk.CTkFrame):
-    def __init__(self, parent, place_order_callback):
-        super().__init__(parent, fg_color=COLORS["background"])
-        self.place_order_callback = place_order_callback
-
-        # Title
-        self.title_label = ctk.CTkLabel(
+        self.left_frame = ctk.CTkScrollableFrame(
             self,
-            text="📦 Take Order",
-            font=FONTS["title"],
-            text_color=COLORS["primary"],
+            fg_color="transparent",
+            corner_radius=5,
+            border_width=1,
+            label_text="Invoice Details",
+            label_anchor="w",
+            orientation="vertical",
+            scrollbar_button_color="lightgrey",
+            scrollbar_button_hover_color="grey",
         )
-        self.title_label.pack(pady=10)
 
+        # Right Frame
+        self.right_frame = ctk.CTkScrollableFrame(
+            self,
+            fg_color="transparent",
+            corner_radius=5,
+            border_width=1,
+            label_text="Invoice Table",
+            label_anchor="w",
+            orientation="vertical",
+            scrollbar_button_color="lightgrey",
+            scrollbar_button_hover_color="grey",
+        )
+
+        # Positioning Frames
+        self.left_frame.pack(
+            side="left",
+            fill="both",
+            expand=True,
+            padx=10,
+            pady=(10, 5),
+        )
+
+        self.right_frame.pack(
+            side="right",
+            fill="both",
+            expand=True,
+            padx=10,
+            pady=(5, 10),
+        )
 
         # Customer Name
-        self.name_label = ctk.CTkLabel(self, text="Customer Name:")
-        self.name_label.pack()
-        self.name_entry = ctk.CTkEntry(self, width=250)
-        self.name_entry.pack(pady=5)
+        customer_name_lable = ctk.CTkLabel(
+            self.left_frame,
+            text="Customer Name",
+        )
+        customer_name_lable.pack(
+            anchor="w",
+            padx=20,
+            pady=(10, 0),
+        )
 
-        # Order Type Dropdown
-        self.order_type_label = ctk.CTkLabel(self, text="Order Type:")
-        self.order_type_label.pack()
-        self.order_type_var = ctk.StringVar(value="Select Order Type")
-        self.order_type_menu = ctk.CTkComboBox(
-            self,
+        customer_name_entry = ctk.CTkEntry(
+            self.left_frame,
+            placeholder_text="Enter Customer Name",
+        )
+        customer_name_entry.pack(
+            fill="x",
+            padx=20,
+            pady=5,
+        )
+
+        # Sevice Type
+        service_type_lable = ctk.CTkLabel(
+            self.left_frame,
+            text="Sevice Type",
+        )
+        service_type_lable.pack(
+            anchor="w",
+            padx=20,
+            pady=(10, 0),
+        )
+        service_type_entry = ctk.CTkComboBox(
+            self.left_frame,
             values=["PDF Printing", "Page Binding"],
-            command=self.toggle_fields,
-            variable=self.order_type_var,
         )
-        self.order_type_menu.pack(pady=5)
-
-        # Book Count
-        self.book_count_label = ctk.CTkLabel(self, text="Number of Books:")
-        self.book_count_label.pack()
-        self.book_count_entry = ctk.CTkEntry(self, width=100)
-        self.book_count_entry.pack(pady=5)
-
-        # Black & White Prints (Only for PDF Printing)
-        self.bw_print_label = ctk.CTkLabel(self, text="B/W Prints:")
-        self.bw_print_entry = ctk.CTkEntry(self, width=100)
-
-        # Color Prints (Only for PDF Printing)
-        self.color_print_label = ctk.CTkLabel(self, text="Color Prints:")
-        self.color_print_entry = ctk.CTkEntry(self, width=100)
-
-        # OHP Sheets (For all orders)
-        self.ohp_label = ctk.CTkLabel(self, text="OHP Sheets:")
-        self.ohp_label.pack()
-        self.ohp_entry = ctk.CTkEntry(self, width=100)
-        self.ohp_entry.pack(pady=5)
-
-        # Delivery Date
-        self.delivery_label = ctk.CTkLabel(
-            self, text="Expected Delivery Date (YYYY-MM-DD):"
+        service_type_entry.pack(
+            fill="x",
+            padx=20,
+            pady=5,
         )
-        self.delivery_label.pack()
-        self.delivery_entry = ctk.CTkEntry(self, width=150)
-        self.delivery_entry.pack(pady=5)
 
-        # Submit Button
-        self.submit_btn = ctk.CTkButton(
-            self, text="Place Order", command=self.place_order
+        # Number of Books
+        number_of_books_lable = ctk.CTkLabel(
+            self.left_frame,
+            text="Number of Books",
         )
-        self.submit_btn.pack(pady=20)
-
-        # Status Bar
-        self.status_bar = ctk.CTkLabel(self, text="", text_color="red")
-        self.status_bar.pack()
-
-    def toggle_fields(self, choice):
-        """Enable/Disable fields based on order type."""
-        if choice == "PDF Printing":
-            self.bw_print_label.pack()
-            self.bw_print_entry.pack()
-            self.color_print_label.pack()
-            self.color_print_entry.pack()
-        else:
-            self.bw_print_label.pack_forget()
-            self.bw_print_entry.pack_forget()
-            self.color_print_label.pack_forget()
-            self.color_print_entry.pack_forget()
-
-    def place_order(self):
-        """Trigger order placement with validation."""
-        if not self.name_entry.get().strip():
-            self.status_bar.configure(text="⚠ Please enter the customer name!")
-            return
-
-        if self.order_type_var.get() == "Select Order Type":
-            self.status_bar.configure(text="⚠ Please select an order type!")
-            return
-
-        try:
-            datetime.strptime(self.delivery_entry.get(), "%Y-%m-%d")
-        except ValueError:
-            self.status_bar.configure(text="⚠ Invalid date format! Use YYYY-MM-DD")
-            return
-
-        self.place_order_callback()
-        self.status_bar.configure(
-            text="✅ Order placed successfully!", text_color="green"
+        number_of_books_lable.pack(
+            anchor="w",
+            padx=20,
+            pady=(10, 0),
         )
-'''
+
+        number_of_books_entry = ctk.CTkEntry(
+            self.left_frame,
+            placeholder_text="Enter Number of Books",
+        )
+        number_of_books_entry.pack(
+            fill="x",
+            padx=20,
+            pady=5,
+        )
+
+        # Black & White Prints
+        b_w_prints_lable = ctk.CTkLabel(
+            self.left_frame,
+            text="Number of Black & White Prints",
+        )
+        b_w_prints_lable.pack(
+            anchor="w",
+            padx=20,
+            pady=(10, 0),
+        )
+
+        b_w_prints_entry = ctk.CTkEntry(
+            self.left_frame,
+            placeholder_text="Enter Number of Black & White Prints",
+        )
+        b_w_prints_entry.pack(
+            fill="x",
+            padx=20,
+            pady=5,
+        )
+
+        # Color Prints
+        color_prints_lable = ctk.CTkLabel(
+            self.left_frame,
+            text="Number of Color Prints",
+        )
+        color_prints_lable.pack(
+            anchor="w",
+            padx=20,
+            pady=(10, 0),
+        )
+
+        color_prints_entry = ctk.CTkEntry(
+            self.left_frame,
+            placeholder_text="Enter Number of Color Prints",
+        )
+        color_prints_entry.pack(
+            fill="x",
+            padx=20,
+            pady=5,
+        )
+
+        # Number of OHP Sheets
+        ohp_sheets_lable = ctk.CTkLabel(
+            self.left_frame,
+            text="Number of OPH Sheets",
+        )
+        ohp_sheets_lable.pack(
+            anchor="w",
+            padx=20,
+            pady=(10, 0),
+        )
+
+        ohp_sheets_entry = ctk.CTkEntry(
+            self.left_frame,
+            placeholder_text="Enter Number of OHP Sheets",
+        )
+        ohp_sheets_entry.pack(
+            fill="x",
+            padx=20,
+            pady=5,
+        )
+
+        # Inside `TakeOrder` class, replace old date entry:
+        self.delivery_date_picker = DatePicker(
+            self.left_frame,
+            "Expected Delivery Date:",
+        )
+        self.delivery_date_picker.pack(
+            fill="x",
+            padx=20,
+            pady=10,
+        )
+
+        # Frame for Place Order Button (to keep it at the bottom)
+        button_frame = ctk.CTkFrame(
+            self.left_frame,
+        )
+        button_frame.pack(
+            fill="x",
+            side="bottom",
+            padx=20,
+            pady=(10, 0),
+        )
+
+        # Place Order Button
+        place_order = ctk.CTkButton(
+            button_frame,
+            text="Place Order",
+        )
+        place_order.pack(
+            padx=20,
+            pady=(10, 0),
+        )
