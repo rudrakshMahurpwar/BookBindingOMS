@@ -41,24 +41,24 @@ class Header(ctk.CTkFrame):
             text="Home",
             width=100,
             command=self.show_home,
-        )
-        self.home_btn.pack(side="left", padx=10)
+        )  # .pack(side="left", padx=10)
 
         self.take_orders_btn = ctk.CTkButton(
             self.right_frame,
             text="Take Order",
             width=100,
             command=self.show_take_order,
+        ).pack(
+            side="left",
+            padx=10,
         )
-        self.take_orders_btn.pack(side="left", padx=10)
 
         self.manage_orders_btn = ctk.CTkButton(
             self.right_frame,
             text="Manage Orders",
             width=100,
             command=self.show_manage_orders,
-        )
-        self.manage_orders_btn.pack(side="left", padx=10)
+        )  # .pack(side="left", padx=10)
 
         # ADMIN BUTTON
         self.admin_btn = ctk.CTkButton(
@@ -71,7 +71,7 @@ class Header(ctk.CTkFrame):
             width=100,
             command=self.show_admin,
         )
-        self.admin_btn.pack(side="left", padx=(10, 0))  # Space between buttons & admin
+        # self.admin_btn.pack(side="left", padx=(10, 0))  # Space between buttons & admin
 
     def show_home(self) -> None:
         for widget in self.content_frame.winfo_children():

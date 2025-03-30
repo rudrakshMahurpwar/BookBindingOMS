@@ -7,7 +7,7 @@ from windows.take_order import TakeOrder
 
 
 # Set the theme
-ctk.set_appearance_mode("light")
+ctk.set_appearance_mode("dark")
 ctk.set_default_color_theme("theme.json")
 
 
@@ -34,25 +34,21 @@ class BookBindingApp(ctk.CTk):
 
         # ---------------- CREATING FRAMES ---------------- #
         self.header_frame = ctk.CTkFrame(
-            self, height=50, fg_color="transparent", corner_radius=50
+            self,
+            height=50,
+            fg_color="transparent",
+            corner_radius=50,
         )
-        self.content = ctk.CTkFrame(self, fg_color=COLORS["accent"], corner_radius=15)
-        self.footer_frame = ctk.CTkFrame(self, height=35, fg_color="transparent")
-
-        # ---------------- CONTENT (Middle Section) ---------------- #
-        self.content.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
-        self.header = Header(self.header_frame, self.content)  # Pass content frame
-        self.header.pack(fill="both", expand=True)
-        self.content.grid_columnconfigure((0, 1), weight=1)
-        self.content.grid_rowconfigure(0, weight=1)
-
-        # Inject TakeOrder frame by default
-        self.take_order_page = TakeOrder(
-            self.content
-        )  # Create an instance of TakeOrder
-        self.take_order_page.pack(
-            fill="both", expand=True
-        )  # Display it in the content frame
+        self.content = ctk.CTkFrame(
+            self,
+            fg_color=COLORS["accent"],
+            corner_radius=15,
+        )
+        self.footer_frame = ctk.CTkFrame(
+            self,
+            height=35,
+            fg_color="transparent",
+        )
 
         # ---------------- HEADER ---------------- #
         self.header_frame.grid(row=0, column=0, sticky="nsew", padx=20, pady=(10, 0))
@@ -66,6 +62,14 @@ class BookBindingApp(ctk.CTk):
         self.header = Header(self.header_frame, self.content)  # Pass content frame
         self.header.pack(fill="both", expand=True)
 
+        # ---------------- CONTENT (Middle Section) ---------------- #
+        self.content.grid(row=1, column=0, sticky="nsew", padx=20, pady=10)
+        self.content.grid_columnconfigure((0, 1), weight=1)
+        self.content.grid_rowconfigure(0, weight=1)
+
+        # Inject TakeOrder frame by default
+        self.landing_page: None = TakeOrder(self.content).pack(fill="both", expand=True)
+
         # ---------------- FOOTER ---------------- #
         self.footer_frame.grid(row=2, column=0, sticky="nsew", padx=20, pady=(0, 10))
 
@@ -74,7 +78,7 @@ class BookBindingApp(ctk.CTk):
         self.footer_frame.pack_propagate(False)
         self.grid_rowconfigure(2, weight=0)  # Stops row from stretching
 
-        # Footer Contents
+        # Inject Footer content from `windows.header.Header`
         self.footer = Footer(self.footer_frame)
         self.footer.pack(fill="both", expand=True)  # Ensures it fills the footer frame
 
